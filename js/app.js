@@ -57,131 +57,137 @@
  * Probando Eventos
  * 
 ********************************************/
+const carrito3 = $("#carrito")
 
-const carrito = document.getElementById('carrito');
-const sushis = document.getElementById('lista-sushi');
-const listaSushi = document.querySelector('#lista-carrito tbody');
-const vaciarCarritoBtn =  document.getElementById('vaciar-carrito');
+$(document).ready(function() {
+    
+    const carrito = document.getElementById('carrito');
+    const carrito2 = $("#carrito");
+    const sushis = document.getElementById('lista-sushi');
+    const listaSushi = $('#lista-carrito tbody');
+    const vaciarCarritoBtn =  document.getElementById('vaciar-carrito');
 
-cargarEventListeners();
+    cargarEventListeners();
 
-function cargarEventListeners() {
-    sushis.addEventListener('click', comprarSushi);
-    carrito.addEventListener('click', eliminarSushi);
-    vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
-    document.addEventListener('DOMContentLoaded', leerLocalStorage)
-}
-
-function comprarSushi(e){
-    e.preventDefault();
-    if(e.target.classList.contains('agregar-carrito')) {
-        const sushi = e.target.parentElement.parentElement;
-        LeerDatosSushi(sushi);
-    }
-}
-
-function LeerDatosSushi(sushi){
-    const infoSushi = {
-        imagen: sushi.querySelector('img').src,
-        tituto: sushi.querySelector('h4').textContent,
-        precio: sushi.querySelector('.precio span').textContent,
-        id:     sushi.querySelector('a').getAttribute('date-id')
-    }
-    insertarCarrito(infoSushi); 
-}
-
-function insertarCarrito(sushi) {
-    const row = document.createElement('tr');
-    row.innerHTML= `
-        <td>
-            <img src="${sushi.imagen}" width=100> 
-        </td>
-        <td>${sushi.titulo}</td>
-        <td>${sushi.precio}</td>
-        <td>
-            <a href="#" class="borrar-sushi" data-id="${sushi.id}">X</a>
-        </td>
-    `;
-    listaSushi.appendChild(row);
-    guardarSushiLocalStorage(sushi);
-}
-
-function eliminarSushi(e) {
-    e.preventDefault();
-
-    let sushi, sushiId;
-
-    if( e.target.classList.contains('borrar-sushi')) {
-        e.target.parentElement.parentElement.remove();
-        sushi = e.target.parentElement.parentElement;
-        sushiId = sushi.querySelector('a').getAttribute('data-id');
-    }
-    eliminarSushiLocalStorage(sushiId);
-}
-
-function vaciarCarrito() {
-    while(listaSushi.firstChild){
-        listaSushi.removeChild(listaSushi.firstChild)
+    function cargarEventListeners() {
+        sushis.addEventListener('click', comprarSushi);
+        carrito.addEventListener('click', eliminarSushi);
+        vaciarCarritoBtn.addEventListener('click', vaciarCarrito);
+        document.addEventListener('DOMContentLoaded', leerLocalStorage)
     }
 
-    vaciarLocalStorage();
-    return false;
-}
-
-function guardarSushiLocalStorage(sushi) {
-    let sushis;
-    sushis = obtenerSushisLocalStorage();
-    sushis.push(sushi);
-    localStorage.setItem('sushis', JSON.stringify(sushis))
-}
-
-function obtenerSushisLocalStorage() {
-    let sushisLs;
-
-    if(localStorage.getItem('sushis') === null){
-        sushisLs = [];
-    } else {
-        sushisLs = JSON.parse(localStorage.getItem('sushis'))
+    function comprarSushi(e){
+        e.preventDefault();
+        if(e.target.classList.contains('agregar-carrito')) {
+            const sushi = e.target.parentElement.parentElement;
+            LeerDatosSushi(sushi);
+        }
     }
-    return sushisLs;
-}
 
-function leerLocalStorage() {
-    let sushisLs;
+    function LeerDatosSushi(sushi){
+        const infoSushi = {
+            imagen: sushi.querySelector('img').src,
+            tituto: sushi.querySelector('h4').textContent,
+            precio: sushi.querySelector('.precio span').textContent,
+            id:     sushi.querySelector('a').getAttribute('date-id')
+        }
+        insertarCarrito(infoSushi); 
+    }
 
-    sushisLs = obtenerSushisLocalStorage();
-
-    sushisLs.forEach(function(sushi){
+    function insertarCarrito(sushi) {
         const row = document.createElement('tr');
         row.innerHTML= `
-        <td>
-            <img src="${sushi.imagen}" width=100> 
-        </td>
-        <td>${sushi.titulo}</td>
-        <td>${sushi.precio}</td>
-        <td>
-            <a href="#" class="borrar-sushi" data-id="${sushi.id}">X</a>
-        </td>
+            <td>
+                <img src="${sushi.imagen}" width=100> 
+            </td>
+            <td>${sushi.titulo}</td>
+            <td>${sushi.precio}</td>
+            <td>
+                <a href="#" class="borrar-sushi" data-id="${sushi.id}">X</a>
+            </td>
         `;
-
         listaSushi.appendChild(row);
-    });
-}
+        guardarSushiLocalStorage(sushi);
+    }
 
-function eliminarSushiLocalStorage (sushi) {
-    let sushisLs;
+    function eliminarSushi(e) {
+        e.preventDefault();
 
-    sushisLs = obtenerSushisLocalStorage();
+        let sushi, sushiId;
 
-    sushisLs.forEach(function (sushisLs, index){
-        if(sushisLs.id === sushi){
-            sushisLs.splice(index, 1)
+        if( e.target.classList.contains('borrar-sushi')) {
+            e.target.parentElement.parentElement.remove();
+            sushi = e.target.parentElement.parentElement;
+            sushiId = sushi.querySelector('a').getAttribute('data-id');
         }
-    });
+        eliminarSushiLocalStorage(sushiId);
+    }
 
-    localStorage.setItem('sushis', JSON.stringify(sushisLs));
-}
+    function vaciarCarrito() {
+        while(listaSushi.firstChild){
+            listaSushi.removeChild(listaSushi.firstChild)
+        }
 
-function vaciarLocalStorage() {
-    localStorage.clear();
-}
+        vaciarLocalStorage();
+        return false;
+    }
+
+    function guardarSushiLocalStorage(sushi) {
+        let sushis;
+        sushis = obtenerSushisLocalStorage();
+        sushis.push(sushi);
+        localStorage.setItem('sushis', JSON.stringify(sushis))
+    }
+
+    function obtenerSushisLocalStorage() {
+        let sushisLs;
+
+        if(localStorage.getItem('sushis') === null){
+            sushisLs = [];
+        } else {
+            sushisLs = JSON.parse(localStorage.getItem('sushis'))
+        }
+        return sushisLs;
+    }
+
+    function leerLocalStorage() {
+        let sushisLs;
+
+        sushisLs = obtenerSushisLocalStorage();
+
+        sushisLs.forEach(function(sushi){
+            const row = document.createElement('tr');
+            row.innerHTML= `
+            <td>
+                <img src="${sushi.imagen}" width=100> 
+            </td>
+            <td>${sushi.titulo}</td>
+            <td>${sushi.precio}</td>
+            <td>
+                <a href="#" class="borrar-sushi" data-id="${sushi.id}">X</a>
+            </td>
+            `;
+
+            listaSushi.appendChild(row);
+        });
+    }
+
+    function eliminarSushiLocalStorage (sushi) {
+        let sushisLs;
+
+        sushisLs = obtenerSushisLocalStorage();
+
+        sushisLs.forEach(function (sushisLs, index){
+            if(sushisLs.id === sushi){
+                sushisLs.splice(index, 1)
+            }
+        });
+
+        localStorage.setItem('sushis', JSON.stringify(sushisLs));
+    }
+
+    function vaciarLocalStorage() {
+        localStorage.clear();
+    }
+
+})
